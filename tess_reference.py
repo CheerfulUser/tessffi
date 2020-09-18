@@ -349,11 +349,11 @@ class TESSref(object):
 
 
 if __name__ == 'main':
-
+    print('starting')
     ref = TESSref()
     parser = ref.define_options()
     args = parser.parse_args()
-
+    print('got options')
     ref.Make_reference(args)
 
     print('Made reference image')
