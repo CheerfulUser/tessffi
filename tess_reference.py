@@ -75,7 +75,7 @@ class TESSref(object):
         self.stacked = True
 
     def define_options(self, parser=None, usage=None, conflict_handler='resolve'):
-        if parser == None:
+        if parser is None:
             parser = argparse.ArgumentParser(usage=usage, conflict_handler=conflict_handler)
         parser.add_argument('-i','--input', default=None)
         parser.add_argument('-o','--output',default=None,
@@ -311,7 +311,7 @@ class TESSref(object):
 
 
     def Pipeline_save(self):
-        if self.savename == None:
+        if self.savename is None:
             self.savename = './not_named_ref.fits.fz'
 
         name = self.savename
