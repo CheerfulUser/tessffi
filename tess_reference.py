@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import numpy as np
 from scipy.signal import savgol_filter
 from copy import deepcopy
@@ -20,7 +19,6 @@ import pandas as pd
 import os
 import argparse
 import tess_bkgsub_class as back
-
 
 
 def Save_files(self):
@@ -77,10 +75,9 @@ class TESSref(object):
         self.stacked = True
 
     def define_options(self, parser=None, usage=None, conflict_handler='resolve'):
-        if parser is None:
+        if parser == None:
             parser = argparse.ArgumentParser(usage=usage, conflict_handler=conflict_handler)
-
-        parser.add_argument('-i','--input', None)
+        parser.add_argument('-i','--input', default=None)
         parser.add_argument('-o','--output',default=None,
                 help=('Full save path for main output'),type=str)
         parser.add_argument('-m','--method',default='low bkg',
@@ -95,6 +92,7 @@ class TESSref(object):
                 help=('Size of the smoothing kernal'))
         parser.add_argument('-off','--offset', default = 500,
                 help=('offset to be added to images'))
+        return parser
 
     def low_bkg_ref(self):
         files = self.imagefiles
@@ -102,6 +100,7 @@ class TESSref(object):
         ex = self.hduext
         for i in range(len(files)):
             hdu = fits.open(files[i])
+
             data = hdu[ex].data
             wcs = WCS(hdu[ex].header)
             cut = Cutout2D(data,(1024+44,1024),2048,wcs=wcs)
@@ -280,7 +279,7 @@ class TESSref(object):
         return 
 
     def Assign_args(self,args):
-        self.imagefiles = args.imagelist
+        self.imagefiles = args.input
         self.name = args.output
         self.pipeline = args.pipeline
         self.method = args.method
@@ -332,6 +331,7 @@ class TESSref(object):
 
     def Make_reference(self,args):
         self.Assign_args(args)
+        self.Load_list()
         self.low_bkg_ref()
         self.Source_mask()
         self.Subtract_background()
@@ -347,13 +347,12 @@ class TESSref(object):
         return
 
 
-
-if __name__ == 'main':
-    print('starting')
+if __name__ == '__main__':
+    print('starting!!!!!')
     ref = TESSref()
     parser = ref.define_options()
     args = parser.parse_args()
-    print('got options')
+    print('got options',args)
     ref.Make_reference(args)
 
     print('Made reference image')

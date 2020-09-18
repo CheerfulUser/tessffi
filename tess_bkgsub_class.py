@@ -333,6 +333,7 @@ class TESS_reduction(object):
                 help=('offset to be added to images'))
         parser.add_argument('-fig','--figure', default = False,
                 help=('Switch to plot reduction figures'))
+        return parser
 
 
     def Save_space(Save):
@@ -571,7 +572,7 @@ class TESS_reduction(object):
 
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
 
     tess = TESS_reduction()
     parser = ref.define_options()
