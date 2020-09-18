@@ -272,7 +272,7 @@ class TESSref(object):
         bkg.smoothing = self.smoothing
         bkg.image = self.image
         bkg.mask = self.mask
-        bkg.Background()
+        bkg.Calculate_background()
         self.bitmask = bkg.bitmask
         self.background = bkg.background
         self.image = self.image - self.background
