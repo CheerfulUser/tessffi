@@ -142,7 +142,7 @@ def Insert_into_orig(self):
 
 
 def Save_files(self):
-    if self.savepath == None:
+    if self.savepath is None:
         self.savepath = '.'
     directory = self.savepath 
     Save_space(directory)
@@ -252,7 +252,7 @@ class TESSbackground():
         return strap_bkg
 
     def Calculate_background(self):
-        if self.mask == None:
+        if self.mask is None:
             print('No source mask is given, calculatng one from this image')
             self.mask = Source_mask(self.image)
 
@@ -451,7 +451,7 @@ class TESS_reduction(object):
 
 
     def Load_image(self):
-        if self.file == None:
+        if self.file is None:
             raise ValueError('No file specified')
         try:
             hdu = fits.open(self.file)
@@ -478,7 +478,7 @@ class TESS_reduction(object):
         return 
     
     def Load_reference(self):
-        if self.reffile == None:
+        if self.reffile is None:
             raise ValueError('No reference file specified')
         try:
             hdu = fits.open(self.reffile)
@@ -518,7 +518,7 @@ class TESS_reduction(object):
 
 
     def Pipeline_save(self):
-        if self.savename == None:
+        if self.savename is None:
             self.savename = './not_named_reduction.fits.fz'
 
         name = self.savename
