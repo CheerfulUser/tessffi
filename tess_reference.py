@@ -80,7 +80,7 @@ class TESSref(object):
         if parser is None:
             parser = argparse.ArgumentParser(usage=usage, conflict_handler=conflict_handler)
 
-        parser.add_argument('-i','--input', nargs='+')
+        parser.add_argument('-i','--input', None)
         parser.add_argument('-o','--output',default=None,
                 help=('Full save path for main output'),type=str)
         parser.add_argument('-m','--method',default='low bkg',
@@ -295,6 +295,41 @@ class TESSref(object):
             self.imagefiles = np.loadtxt(self.imagefiles,dtype=object)
         return
 
+    def Background_name(self):
+        name = self.savename
+        bkgname = name.split('.fits')[0] + '.bkg.fits.fz'
+        return bkgname
+
+    def Noise_name(self):
+        name = self.savename
+        noisename = name.split('.fits')[0] + '.noise.fits.fz'
+        return noisename
+
+    def Bitmask_name(self):
+        name = self.savename
+        maskname = name.split('.fits')[0] + '.mask.fits.fz'
+        return maskname
+
+
+    def Pipeline_save(self):
+        if self.savename == None:
+            self.savename = './not_named_ref.fits.fz'
+
+        name = self.savename
+        Make_fits(self.subtracted,name,self.header)
+
+        name = self.Background_name()
+        Make_fits(self.background,name,self.header)
+
+        name = self.Noise_name()
+        Make_fits(self.noise,name,self.header)
+
+        name = self.Bitmask_name()
+        Make_fits(self.bitmask,name,self.header)
+        print('All files saved')
+        return
+
+
     def Make_reference(self,args):
         self.Assign_args(args)
         self.low_bkg_ref()
@@ -303,7 +338,12 @@ class TESSref(object):
         self.Saturation_mask(self)
         self.Insert_into_orig(self)
         self.Update_header(self)
-        Save_files(self)
+        if self.pipeline:
+            self.Pipeline_save()
+        else:
+            Save_files(self)
+    
+        print('Done!')
         return
 
 
