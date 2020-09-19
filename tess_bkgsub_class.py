@@ -265,9 +265,9 @@ class TESSbackground():
         big_strap = convolve(strap_mask,np.ones((3,3))) > 0
         big_mask = convolve((mask==0)*1,np.ones((8,8))) > 0
 
-        masked = data * ((big_mask==0)*1) * ((big_strap==0)*1)
+        masked = deepcopy(data) * ((big_mask==0)*1) * ((big_strap==0)*1)
         masked[masked == 0] = np.nan
-        print(self.smoothing)
+        print(type(masked),masked)
         bkg_smooth, bitmask = self.Smooth_bkg(masked,self.smoothing)
         round1 = data - bkg_smooth
         round2 = round1 * ((big_strap==1)*1) * ((big_mask==1)*1)
