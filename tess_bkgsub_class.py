@@ -267,11 +267,11 @@ class TESSbackground():
 
         masked = data * ((big_mask==0)*1) * ((big_strap==0)*1)
         masked[masked == 0] = np.nan
-        bkg_smooth, bitmask = Smooth_bkg(masked,self.smoothing, extrapolate = True)
+        bkg_smooth, bitmask = self.Smooth_bkg(masked,self.smoothing, extrapolate = True)
         round1 = data - bkg_smooth
         round2 = round1 * ((big_strap==1)*1) * ((big_mask==1)*1)
         round2[round2 == 0] = np.nan
-        strap_bkg = Strap_bkg(round2)
+        strap_bkg = self.Strap_bkg(round2)
 
         self.background = strap_bkg + bkg_smooth
         self.bitmask = bitmask
