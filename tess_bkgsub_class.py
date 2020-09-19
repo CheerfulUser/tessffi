@@ -184,11 +184,11 @@ class TESSbackground():
 
 
     def Smooth_bkg(data,smoothing_factor, extrapolate = True):
-
-        data[data == 0] = np.nan
-        x = np.arange(0, data.shape[1])
-        y = np.arange(0, data.shape[0])
-        arr = np.ma.masked_invalid(data)
+        d = deepcopy(data)
+        d[d == 0] = np.nan
+        x = np.arange(0, d.shape[1])
+        y = np.arange(0, d.shape[0])
+        arr = np.ma.masked_invalid(d)
         xx, yy = np.meshgrid(x, y)
         #get only the valid values
         x1 = xx[~arr.mask]
