@@ -153,7 +153,7 @@ class TESSref(object):
 
 
 
-    def Save_space(Save):
+    def Save_space(self,Save):
         """
         Creates a path if it doesn't already exist.
         """
@@ -164,7 +164,7 @@ class TESSref(object):
             pass
 
 
-    def sigma_mask(data,error= None,sigma=3,Verbose= False):
+    def sigma_mask(self,data,error= None,sigma=3,Verbose= False):
         if type(error) == type(None):
             error = np.zeros(len(data))
 
@@ -260,7 +260,7 @@ class TESSref(object):
         return
 
 
-    def Make_fits(data, header, name):
+    def Make_fits(self,data, header, name):
 
         newhdu = fits.PrimaryHDU(data, header = header)
         newhdu.writeto(name,overwrite=True)

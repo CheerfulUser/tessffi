@@ -183,8 +183,9 @@ class TESSbackground():
         self.bitmask = None
 
 
-    def Smooth_bkg(data,smoothing_factor, extrapolate = True):
+    def Smooth_bkg(self,data,smoothing_factor, extrapolate = True):
         d = deepcopy(data)
+        bla = 
         d[d == 0] = np.nan
         x = np.arange(0, d.shape[1])
         y = np.arange(0, d.shape[0])
@@ -208,7 +209,7 @@ class TESSbackground():
 
         return estimate, bitmask
 
-    def Strap_bkg(data):
+    def Strap_bkg(self,data):
 
         ind = np.where(np.nansum(abs(self.image),axis=0)>0)[0]
         strap_bkg = np.zeros_like(data)
