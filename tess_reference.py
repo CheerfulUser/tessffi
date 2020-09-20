@@ -335,9 +335,9 @@ class TESSref(object):
         self.low_bkg_ref()
         self.Source_mask()
         self.Subtract_background()
-        self.Saturation_mask(self)
-        self.Insert_into_orig(self)
-        self.Update_header(self)
+        self.Saturation_mask()
+        self.Insert_into_orig()
+        self.Update_header()
         if self.pipeline:
             self.Pipeline_save()
         else:

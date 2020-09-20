@@ -267,7 +267,7 @@ class TESSbackground():
 
         masked = deepcopy(data) * ((big_mask==0)*1) * ((big_strap==0)*1)
         masked[masked == 0] = np.nan
-        print(type(masked),masked)
+        
         bkg_smooth, bitmask = self.Smooth_bkg(masked,self.smoothing)
         round1 = data - bkg_smooth
         round2 = round1 * ((big_strap==1)*1) * ((big_mask==1)*1)
