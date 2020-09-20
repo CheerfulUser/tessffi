@@ -281,8 +281,6 @@ class TESSbackground():
 
 
 
-
-
 class TESS_reduction(object):
     def __init__(self):
         #needed
@@ -348,16 +346,7 @@ class TESS_reduction(object):
             pass
 
 
-    def sigma_mask(data,error= None,sigma=3,Verbose= False):
-        if type(error) == type(None):
-            error = np.zeros(len(data))
-
-        calcaverage = sigmacut.calcaverageclass()
-        calcaverage.calcaverage_sigmacutloop(data,Nsigma=sigma
-                                             ,median_firstiteration=True,saveused=True)
-        if Verbose:
-            print("mean:%f (uncertainty:%f)" % (calcaverage.mean,calcaverage.mean_err))
-        return calcaverage.clipped
+    
 
     def Source_mask(self, grid=True):
         """
