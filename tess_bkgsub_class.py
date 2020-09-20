@@ -185,7 +185,6 @@ class TESSbackground():
 
     def Smooth_bkg(self,data,smoothing_factor, extrapolate = True):
         d = deepcopy(data)
-        bla = 
         d[d == 0] = np.nan
         x = np.arange(0, d.shape[1])
         y = np.arange(0, d.shape[0])
