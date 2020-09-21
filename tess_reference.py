@@ -221,13 +221,10 @@ class TESSref(object):
         new_image = np.zeros((2078,2136))
         
         b = deepcopy(new_image)
-        print(b.shape)
         b[:,:] =  128 | 1
-        print(b.shape)
         b[:2048,44:44+2048] = self.bitmask
-        print(b.shape)
         self.bitmask = b
-        print(self.bitmask.shape)
+
         data = deepcopy(new_image)
         data[:2048,44:44+2048] = self.subtracted
         self.image = data
@@ -346,7 +343,7 @@ class TESSref(object):
         self.Subtract_background()
         self.Saturation_mask()
         self.Insert_into_orig()
-        print(self.image.shape)
+        
         self.Update_header()
         if self.pipeline:
             self.Pipeline_save()
