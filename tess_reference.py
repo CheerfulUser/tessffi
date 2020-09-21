@@ -213,10 +213,10 @@ class TESSref(object):
         """
         new_image = self.hdu.data
         
-        bitmask = deepcopy(new_image)
-        bitmask =  128 | 1
-        bitmask[:2048,44:44+2048] = self.bitmask
-        self.bitmask = bitmask
+        b = deepcopy(new_image)
+        b =  128 | 1
+        b[:2048,44:44+2048] = self.bitmask
+        self.bitmask = b
 
         data = deepcopy(new_image)
         data[:2048,44:44+2048] = self.image
