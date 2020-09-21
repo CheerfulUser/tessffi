@@ -46,7 +46,7 @@ def Save_files(self):
     return
 
 def Make_fits(data, name, header):
-
+    print('makefits shape ',data.shape)
     newhdu = fits.PrimaryHDU(data, header = header)
     newhdu.writeto(name,overwrite=True)
     return 
