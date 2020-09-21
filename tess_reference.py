@@ -214,7 +214,7 @@ class TESSref(object):
         new_image = np.zeros((2048,2048))
         
         b = deepcopy(new_image)
-        b =  128 | 1
+        b[:,:] =  128 | 1
         b[:2048,44:44+2048] = self.bitmask
         self.bitmask = b
 
