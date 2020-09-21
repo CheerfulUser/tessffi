@@ -241,7 +241,7 @@ class TESSref(object):
         jd = self.header['TSTART'] + self.header['BJDREFI']
         self.header['MJD'] = Time(jd, format='jd', scale='tdb').mjd
         
-        if self.background != None:
+        if self.background is None:
             newhdu.header['BACKAPP'] = 'T'
         self.header['NOISEIM'] = 1
         self.header['MASKIM'] = 1
