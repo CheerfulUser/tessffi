@@ -220,7 +220,7 @@ class TESSref(object):
         self.bitmask = b
 
         data = deepcopy(new_image)
-        data[:2048,44:44+2048] = self.image
+        data[:2048,44:44+2048] = self.subtracted
         self.image = data
 
         noise = deepcopy(new_image)
