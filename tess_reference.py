@@ -340,6 +340,7 @@ class TESSref(object):
         self.Subtract_background()
         self.Saturation_mask()
         self.Insert_into_orig()
+        print(self.image.shape)
         self.Update_header()
         if self.pipeline:
             self.Pipeline_save()
