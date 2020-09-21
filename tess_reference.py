@@ -211,7 +211,7 @@ class TESSref(object):
         """
         Insert the cutout image into the original array shape to avoid wcs issues.
         """
-        new_image = self.hdu.data
+        new_image = np.zeros((2048,2048))
         
         b = deepcopy(new_image)
         b =  128 | 1
