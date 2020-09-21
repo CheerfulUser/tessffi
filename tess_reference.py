@@ -64,6 +64,7 @@ class TESSref(object):
         self.date = None
         self.image = None
         self.background = None
+        self.subtracted = None
         self.noise = None
         self.bitmask = None
         self.header = None
