@@ -45,6 +45,11 @@ def Save_files(self):
     print('saved: ' + self.sector + ref + str(int(self.camera) * int(self.ccd)))
     return
 
+def Make_fits(data, name, header):
+
+    newhdu = fits.PrimaryHDU(data, header = header)
+    newhdu.writeto(name,overwrite=True)
+    return 
 
 
 class TESSref(object):
@@ -260,13 +265,6 @@ class TESSref(object):
 
         print('Header updated')
         return
-
-
-    def Make_fits(self,data, header, name):
-
-        newhdu = fits.PrimaryHDU(data, header = header)
-        newhdu.writeto(name,overwrite=True)
-        return 
 
 
     def Subtract_background(self):
