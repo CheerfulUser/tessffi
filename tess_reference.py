@@ -231,7 +231,6 @@ class TESSref(object):
         data = deepcopy(new_image)
         data[:2048,44:44+2048] = self.subtracted
         self.image = data
-        self.subtracted = data
 
         data = deepcopy(new_image)
         data[:2048,44:44+2048] = self.background
@@ -325,7 +324,7 @@ class TESSref(object):
             self.savename = './not_named_ref.fits.fz'
 
         name = self.savename
-        Make_fits(self.subtracted,name,self.header)
+        Make_fits(self.image,name,self.header)
 
         name = self.Background_name()
         Make_fits(self.background,name,self.header)
