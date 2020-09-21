@@ -231,6 +231,11 @@ class TESSref(object):
         data = deepcopy(new_image)
         data[:2048,44:44+2048] = self.subtracted
         self.image = data
+        self.subtracted = data
+
+        data = deepcopy(new_image)
+        data[:2048,44:44+2048] = self.background
+        self.background = data
 
         noise = deepcopy(new_image)
         noise[:2048,44:44+2048] = self.noise
@@ -243,8 +248,8 @@ class TESSref(object):
         sub += self.pedastal # add a pedastal value 
         skysig = np.nanmedian(np.nanstd(sub*convolve(self.mask,np.ones((3,3)))))
         skyadu = np.nanmedian(np.nanmedian(sub*convolve(self.mask,np.ones((3,3)))))
-        self.header['NAXIS1'] = 2136
-        self.header['NAXIS2'] = 2078
+        #self.header['NAXIS1'] = 2136
+        #self.header['NAXIS2'] = 2078
         self.header['SKYADU'] = (skyadu, 'median sky')
         self.header['SKYSIG'] = (skysig, 'median sky noise')
         self.header['NIMAGES'] = (str(int(1)), 'number of images stacked')
