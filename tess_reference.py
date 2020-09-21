@@ -276,7 +276,7 @@ class TESSref(object):
         bkg.Calculate_background()
         self.bitmask = bkg.bitmask
         self.background = bkg.background
-        self.image = self.image - self.background
+        self.subtracted = self.image - self.background
         return 
 
     def Assign_args(self,args):
