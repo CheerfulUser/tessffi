@@ -74,6 +74,7 @@ class TESSref(object):
         self.camera = None
         self.ccd = None
         self.stacked = True
+        self.savename = None
 
     def define_options(self, parser=None, usage=None, conflict_handler='resolve'):
         if parser is None:
