@@ -156,6 +156,7 @@ class TESSbackground():
         # options
         self.mask = None
         self.smoothing = 12
+        self.strap = True
         # calculated
         self.background = None
         self.noise = None
@@ -249,9 +250,12 @@ class TESSbackground():
         
         bkg_smooth, bitmask = self.Smooth_bkg(masked,self.smoothing)
         round1 = data - bkg_smooth
-        round2 = round1 * ((big_strap==1)*1) * ((big_mask==1)*1)
-        round2[round2 == 0] = np.nan
-        strap_bkg = self.Strap_bkg(round2)
+        if self.strap:
+            round2 = round1 * ((big_strap==1)*1) * ((big_mask==1)*1)
+            round2[round2 == 0] = np.nan
+            strap_bkg = self.Strap_bkg(round2)
+        else:
+            strap_bkg = 0
 
         self.background = strap_bkg + bkg_smooth
         self.bitmask = bitmask
@@ -275,6 +279,7 @@ class TESS_reduction(object):
         self.plot = False
         self.smoothing = 12
         self.pedastal = 500
+        self.strap = True
         self.savepath = '.'
         # calculated
         self.mask = None
@@ -309,6 +314,8 @@ class TESS_reduction(object):
                 help=('Full save path for main output'),type=str)
         parser.add_argument('-p','--pipeline', default = True, 
                 help=('Switch to use pipeline saving function'))
+        parser.add_argument('-strap','--strap', default = True,
+                help=('Include the strap background subtraction'))
         parser.add_argument('-s','--smoothing', default = 12,
                 help=('Size of the smoothing kernal'))
         parser.add_argument('-off','--offset', default = 500,
@@ -470,6 +477,7 @@ class TESS_reduction(object):
         bkg = TESSbackground()
         bkg.image = self.image
         bkg.mask = self.mask
+        bkg.strap = self.strap
         bkg.smoothing = self.smoothing
         bkg.Calculate_background()
         self.background = bkg.background
@@ -518,6 +526,7 @@ class TESS_reduction(object):
         self.savename = args.output
         self.pipeline = args.pipeline
         self.smoothing = args.smoothing
+        self.strap = args.strap
         self.pedastal = args.offset
         self.plot = args.figure
         return

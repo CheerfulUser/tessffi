@@ -64,6 +64,7 @@ class TESSref(object):
         self.pedastal = 500
         self.savepath = '.'
         self.method = 'low bkg'
+        self.strap = True
         # calculated
         self.hdu = None
         self.date = None
@@ -98,6 +99,8 @@ class TESSref(object):
                 help=('extension that the image is stored in. 1 for raw TESS files'))
         parser.add_argument('-s','--smoothing', default = 12,
                 help=('Size of the smoothing kernal'))
+        parser.add_argument('-strap','--strap', default = True,
+                help=('Include the strap background subtraction'))
         parser.add_argument('-off','--offset', default = 500,
                 help=('offset to be added to images'))
         return parser
@@ -279,6 +282,7 @@ class TESSref(object):
         bkg.smoothing = self.smoothing
         bkg.image = self.image
         bkg.mask = self.mask
+        bkg.strap = self.strap
         bkg.Calculate_background()
         self.bitmask = bkg.bitmask
         self.background = bkg.background
@@ -294,6 +298,7 @@ class TESSref(object):
         self.pipeline = args.pipeline
         self.hduext = args.extension
         self.smoothing = args.smoothing
+        self.strap = args.strap
         self.pedastal = args.offset
         return
 
