@@ -118,27 +118,6 @@ def Saturation_mask(self):
         print('Saturated pixels masked')
         return self
 
-def Insert_into_orig(self):
-    """
-    Insert the cutout image into the original array shape to avoid wcs issues.
-    """
-    new_image = self.hdu.data
-    
-    bitmask = deepcopy(new_image)
-    bitmask =  128 | 1
-    bitmask[:2048,44:44+2048] = self.bitmask
-    self.bitmask = bitmask
-
-    data = deepcopy(new_image)
-    data[:2048,44:44+2048] = self.image
-    self.image = data
-
-    noise = deepcopy(new_image)
-    noise[:2048,44:44+2048] = self.noise
-    self.noise = noise
-    print('Arrays recast into original shape.')
-    return self
-
 
 
 def Save_files(self):
@@ -390,16 +369,20 @@ class TESS_reduction(object):
         """
         Insert the cutout image into the original array shape to avoid wcs issues.
         """
-        new_image = self.hdu.data
+        new_image = np.zeros((2078,2136))
         
-        bitmask = deepcopy(new_image)
-        bitmask =  128 | 1
-        bitmask[:2048,44:44+2048] = self.bitmask
-        self.bitmask = bitmask
+        b = deepcopy(new_image)
+        b[:,:] =  128 | 1
+        b[:2048,44:44+2048] = self.bitmask
+        self.bitmask = b
 
         data = deepcopy(new_image)
-        data[:2048,44:44+2048] = self.image
+        data[:2048,44:44+2048] = self.subtracted
         self.image = data
+
+        data = deepcopy(new_image)
+        data[:2048,44:44+2048] = self.background
+        self.background = data
 
         noise = deepcopy(new_image)
         noise[:2048,44:44+2048] = self.noise
@@ -557,6 +540,8 @@ class TESS_reduction(object):
             self.Saturation_mask()
             # update header with info
             self.Update_header()
+            # apply offset
+            self.image += self.pedastal
             # put back into the original format
             self.Insert_into_orig()
 
