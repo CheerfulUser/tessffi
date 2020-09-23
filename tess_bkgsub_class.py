@@ -362,7 +362,10 @@ class TESS_reduction(object):
                 for j in range(grid.shape[1]//size):
                     section = data[i*size:(i+1)*size,j*size:(j+1)*size]
                     section = section[np.isfinite(section)]
-                    lim = np.percentile(section,1)
+                    if len(section) > 10:
+                        lim = np.percentile(section,1)
+                    else:
+                        lim = np.nan
                     grid[i*size:(i+1)*size,j*size:(j+1)*size] = lim
             thing = data - grid
         else:
