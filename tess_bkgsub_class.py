@@ -258,7 +258,11 @@ class TESSbackground():
         print('Background calculated')
         return 
 
-
+def Make_fits(data, name, header):
+    print('makefits shape ',data.shape)
+    newhdu = fits.PrimaryHDU(data, header = header)
+    newhdu.writeto(name,overwrite=True)
+    return 
 
 class TESS_reduction(object):
     def __init__(self):
@@ -420,13 +424,6 @@ class TESS_reduction(object):
 
         print('Header updated')
         return 
-
-
-    def Make_fits(data, header, name):
-
-        newhdu = fits.PrimaryHDU(data, header = header)
-        newhdu.writeto(name,overwrite=True)
-        return
 
 
     def Load_image(self):
