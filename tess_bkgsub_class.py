@@ -478,6 +478,7 @@ class TESS_reduction(object):
         data = hdu[0].data
         cut = Cutout2D(data,(1024+44,1024),2048)
         self.reference = cut.data
+        print(self.reference)
         return
 
     def Subtract_background(self):

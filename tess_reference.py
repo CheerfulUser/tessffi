@@ -84,6 +84,7 @@ class TESSref(object):
     def define_options(self, parser=None, usage=None, conflict_handler='resolve'):
         if parser is None:
             parser = argparse.ArgumentParser(usage=usage, conflict_handler=conflict_handler)
+            
         parser.add_argument('-i','--input', default=None)
         parser.add_argument('-o','--output',default=None,
                 help=('Full save path for main output'),type=str)
