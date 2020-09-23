@@ -568,7 +568,7 @@ if __name__ == '__main__':
     parser = tess.define_options()
     args = parser.parse_args()
 
-    self.Run_reduction(args)
+    tess.Run_reduction(args)
 
     print('Subtracted background')
 
