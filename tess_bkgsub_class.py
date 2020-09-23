@@ -318,21 +318,21 @@ class TESS_reduction(object):
         if parser is None:
             parser = argparse.ArgumentParser(usage=usage, conflict_handler=conflict_handler)
 
-        parser.add_argument('-i','--image', default = None, 
-                help=('Image to reduce'))
-        parser.add_argument('-r','--reference', default = None,
-                help=('reference image'))
-        parser.add_argument('-o','--output',default=None,
-                help=('Full save path for main output'),type=str)
-        parser.add_argument('-p','--pipeline', default = True, 
-                help=('Switch to use pipeline saving function'))
-        parser.add_argument('-s','--smoothing', default = 12,
-                help=('Size of the smoothing kernal'))
-        parser.add_argument('-off','--offset', default = 500,
-                help=('offset to be added to images'))
-        parser.add_argument('-fig','--figure', default = False,
-                help=('Switch to plot reduction figures'))
-        return parser
+            parser.add_argument('-i','--image', default = None, 
+                    help=('Image to reduce'))
+            parser.add_argument('-r','--reference', default = None,
+                    help=('reference image'))
+            parser.add_argument('-o','--output',default=None,
+                    help=('Full save path for main output'),type=str)
+            parser.add_argument('-p','--pipeline', default = True, 
+                    help=('Switch to use pipeline saving function'))
+            parser.add_argument('-s','--smoothing', default = 12,
+                    help=('Size of the smoothing kernal'))
+            parser.add_argument('-off','--offset', default = 500,
+                    help=('offset to be added to images'))
+            parser.add_argument('-fig','--figure', default = False,
+                    help=('Switch to plot reduction figures'))
+            return parser
 
 
     def Save_space(Save):
@@ -567,7 +567,7 @@ if __name__ == '__main__':
     tess = TESS_reduction()
     parser = tess.define_options()
     args = parser.parse_args()
-
+    
     tess.Run_reduction(args)
 
     print('Subtracted background')
