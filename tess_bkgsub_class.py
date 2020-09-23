@@ -378,10 +378,13 @@ class TESS_reduction(object):
 
 
     def Saturation_mask(self):
-            saturation = self.image > self.saturation
-            self.bitmask[saturation] = self.bitmask[saturation] | (128 | 2)
-            print('Saturated pixels masked')
-            return 
+        if self.bitmask is None:
+            self.bitmask = np.zeros_like(self.image,dtype=int)
+        saturation = self.image > self.saturation
+
+        self.bitmask[saturation] = self.bitmask[saturation] | (128 | 2)
+        print('Saturated pixels masked')
+        return 
 
     def Insert_into_orig(self):
         """
