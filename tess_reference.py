@@ -286,8 +286,9 @@ class TESSref(object):
 
     def Assign_args(self,args):
         self.imagefiles = args.input
-        self.name = args.output
         self.pipeline = args.pipeline
+        self.name = args.output    
+        self.savename = self.name
         self.method = args.method
         self.pipeline = args.pipeline
         self.hduext = args.extension
