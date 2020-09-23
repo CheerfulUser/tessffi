@@ -541,22 +541,23 @@ class TESS_reduction(object):
         self.Assign_args(args)
         # load images 
         self.Load_image()
-        self.Load_reference()
-        # get the source mask from the reference image
-        self.Source_mask()
-        # get background and subtract from image
-        self.Subtract_background()
-        # identify saturated pixels
-        self.Saturation_mask()
-        # update header with info
-        self.Update_header()
-        # put back into the original format
-        self.Insert_into_orig()
+        if np.nansum(self.image) > 100:
+            self.Load_reference()
+            # get the source mask from the reference image
+            self.Source_mask()
+            # get background and subtract from image
+            self.Subtract_background()
+            # identify saturated pixels
+            self.Saturation_mask()
+            # update header with info
+            self.Update_header()
+            # put back into the original format
+            self.Insert_into_orig()
 
-        if self.pipeline:
-            self.Pipeline_save()
-        else:
-            Save_files(self)
+            if self.pipeline:
+                self.Pipeline_save()
+            else:
+                Save_files(self)
     
         print('Done!')
         return
