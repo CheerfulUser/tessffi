@@ -21,6 +21,11 @@ import os
 import argparse
 
 
+# turn off runtime warnings (lots from logic on nans)
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning) 
+
+
 def Save_space(Save):
     """
     Creates a path if it doesn't already exist.
@@ -30,6 +35,17 @@ def Save_space(Save):
             os.makedirs(Save)
     except FileExistsError:
         pass
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
 def sigma_mask(data,error= None,sigma=3,Verbose= False):
@@ -314,15 +330,18 @@ class TESS_reduction(object):
                 help=('reference image'))
         parser.add_argument('-o','--output',default=None,
                 help=('Full save path for main output'),type=str)
-        parser.add_argument('-p','--pipeline', default = True, 
+        parser.add_argument('-p','--pipeline', type=str2bool, nargs='?',
+                        const=True, default=True, 
                 help=('Switch to use pipeline saving function'))
-        parser.add_argument('-strap','--strap', default = True,
+        parser.add_argument('-strap','--strap', type=str2bool, nargs='?',
+                        const=True, default=True,
                 help=('Include the strap background subtraction'))
         parser.add_argument('-s','--smoothing', default = 12,
                 help=('Size of the smoothing kernal'))
         parser.add_argument('-off','--offset', default = 500,
                 help=('offset to be added to images'))
-        parser.add_argument('-fig','--figure', default = False,
+        parser.add_argument('-fig','--figure',type=str2bool, nargs='?',
+                        const=True, default=False,
                 help=('Switch to plot reduction figures'))
         return parser
 

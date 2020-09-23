@@ -21,6 +21,11 @@ import argparse
 import tess_bkgsub_class as back
 
 
+# turn off runtime warnings (lots from logic on nans)
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning) 
+
+
 def Save_files(self):
     directory = self.savepath 
     Save_space(directory)
