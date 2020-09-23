@@ -251,10 +251,12 @@ class TESSbackground():
         bkg_smooth, bitmask = self.Smooth_bkg(masked,self.smoothing)
         round1 = data - bkg_smooth
         if self.strap:
+            print('calculating strap background')
             round2 = round1 * ((big_strap==1)*1) * ((big_mask==1)*1)
             round2[round2 == 0] = np.nan
             strap_bkg = self.Strap_bkg(round2)
         else:
+            print('Not calculating strap background')
             strap_bkg = 0
 
         self.background = strap_bkg + bkg_smooth
