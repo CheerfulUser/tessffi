@@ -565,7 +565,7 @@ class TESS_reduction(object):
 if __name__ == '__main__':
 
     tess = TESS_reduction()
-    parser = ref.define_options()
+    parser = tess.define_options()
     args = parser.parse_args()
 
     self.Run_reduction(args)
