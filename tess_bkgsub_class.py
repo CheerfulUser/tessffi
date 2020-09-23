@@ -464,7 +464,7 @@ class TESS_reduction(object):
         wcs = cut.wcs
         err = Cutout2D(err,(1024+44,1024),2048).data
         self.noise = err
-        print('Successfully loaded {}'.format(file))
+        print('Successfully loaded {}'.format(self.file))
         return 
     
     def Load_reference(self):
@@ -473,7 +473,7 @@ class TESS_reduction(object):
         try:
             hdu = fits.open(self.reffile)
         except:
-            raise ValueError('Could not load {}'.format(self.file))        
+            raise ValueError('Could not load {}'.format(self.reffile))        
 
         data = hdu[0].data
         cut = Cutout2D(data,(1024+44,1024),2048)
