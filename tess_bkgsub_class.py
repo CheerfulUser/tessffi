@@ -464,7 +464,6 @@ class TESS_reduction(object):
         data = hdu[0].data
         cut = Cutout2D(data,(1024+44,1024),2048)
         self.reference = cut.data
-        print(self.reference)
         return
 
     def Subtract_background(self):
@@ -516,7 +515,7 @@ class TESS_reduction(object):
     def Assign_args(self,args):
         self.file = args.image
         self.reffile = args.reference
-        self.savepath = args.output
+        self.savename = args.output
         self.pipeline = args.pipeline
         self.smoothing = args.smoothing
         self.pedastal = args.offset
