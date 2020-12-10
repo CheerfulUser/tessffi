@@ -614,7 +614,7 @@ class TESS_reduction(object):
             # update header with info
             self.Update_header()
             # apply offset
-            self.subtract += self.pedastal
+            self.subtracted += self.pedastal
             # put back into the original format
             self.Insert_into_orig()
 
