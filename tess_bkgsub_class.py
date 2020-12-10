@@ -145,7 +145,7 @@ def Save_files(self):
     Creates the save paths for the output files.
     """
     if self.savepath is None:
-        self.savepath = '.'
+        self.savepath = './no_name/'
     directory = self.savepath 
     Save_space(directory)
     if self.stacked:
