@@ -317,7 +317,7 @@ class TESS_reduction(object):
         self.smoothing = 12
         self.pedastal = 500
         self.strap = True
-        self.savepath = '.'
+        self.savepath = None
         # calculated
         self.mask = None
         self.hdu = None
