@@ -25,6 +25,7 @@ import argparse
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning) 
 
+package_directory = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 def Save_space(Save):
     """
@@ -268,7 +269,7 @@ class TESSbackground():
         data = deepcopy(self.image)
 
         strap_mask = np.zeros_like(data)
-        straps = pd.read_csv('tess_straps.csv')['Column'].values
+        straps = pd.read_csv(package_directory + 'tess_straps.csv')['Column'].values
         strap_mask[:,straps-1] = 1
         big_strap = convolve(strap_mask,np.ones((3,3))) > 0
         big_mask = convolve((mask==0)*1,np.ones((8,8))) > 0
@@ -384,7 +385,7 @@ class TESS_reduction(object):
         then a limited background subtraction is performed on a 32x32 pix grid to
         get a better idea of sources with a basic background subtraction.
         """
-        data = self.image
+        data = deepcopy(self.image)
         if grid:
             data[data<0] = np.nan
             data[data >= np.percentile(data,95)] =np.nan
@@ -451,7 +452,7 @@ class TESS_reduction(object):
         Update the fits header to the format needed for photpipe
         """
         sub = self.subtracted
-        sub += self.pedastal # add a pedastal value 
+        #sub += self.pedastal # add a pedastal value 
         skysig = np.nanmedian(np.nanstd(sub*convolve(self.mask,np.ones((3,3)))))
         skyadu = np.nanmedian(np.nanmedian(sub*convolve(self.mask,np.ones((3,3)))))
         self.header['SKYADU'] = (skyadu, 'median sky')
