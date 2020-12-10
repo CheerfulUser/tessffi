@@ -128,6 +128,7 @@ def figures(data, bkg, err, save):
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
     plt.tight_layout()
+    print(save)
     plt.savefig(save)
     plt.close()
     return
