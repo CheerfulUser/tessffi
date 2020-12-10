@@ -151,21 +151,22 @@ def Save_files(self):
     Save_space(directory)
     if self.stacked:
         ref = '_stack_'
-    ref = '_' + self.date + '_'
+    else:
+        ref = '_' + self.date + '_'
     
-    name = directory + sector + ref + str(int(cam) * int(ccd)) + '.pdf'
+    name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.pdf'
     figures(self.data,self.background,self.noise,name)
 
-    name = directory + sector + ref + str(int(cam) * int(ccd)) + '.fits.fz'
+    name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.fits.fz'
     Make_fits(self.image,name,self.header)
 
-    name = directory + sector + ref + str(int(cam) * int(ccd)) + '.bkg.fits.fz'
+    name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.bkg.fits.fz'
     Make_fits(self.background,name,self.header)
 
-    name = directory + sector + ref + str(int(cam) * int(ccd)) + '.mask.fits.fz'
+    name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.mask.fits.fz'
     Make_fits(self.bitmask,name,self.header)
 
-    name = directory + sector + ref + str(int(cam) * int(ccd)) + '.noise.fits.fz'
+    name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.noise.fits.fz'
     Make_fits(self.noise,name,self.header)
     print('saved: ' + self.sector + ref + str(int(self.camera) * int(self.ccd)))
     return
