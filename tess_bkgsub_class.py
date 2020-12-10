@@ -155,10 +155,10 @@ def Save_files(self):
         ref = '_' + self.date + '_'
     
     name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.pdf'
-    figures(self.data,self.background,self.noise,name)
+    figures(self.subtracted,self.background,self.noise,name)
 
     name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.fits.fz'
-    Make_fits(self.image,name,self.header)
+    Make_fits(self.subtracted,name,self.header)
 
     name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.bkg.fits.fz'
     Make_fits(self.background,name,self.header)
