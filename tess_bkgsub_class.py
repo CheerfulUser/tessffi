@@ -93,8 +93,8 @@ def figures(data, bkg, err, save):
     plt.figure(figsize=(8,8))
     plt.subplot(2,2,1)
     plt.title('Raw')
-    im = plt.imshow(data,origin='',vmin=np.percentile(data,10),
-                vmax=np.percentile(data,90))
+    im = plt.imshow(data+bkg,origin='',vmin=np.percentile(data+bkg,10),
+                vmax=np.percentile(data+bkg,90))
     ax = plt.gca()
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -120,10 +120,9 @@ def figures(data, bkg, err, save):
 
 
     plt.subplot(2,2,4)
-    sub = data - bkg
     plt.title('Subbed')
-    im = plt.imshow(sub,origin='',vmin=np.percentile(sub,10),
-                vmax=np.percentile(sub,90))
+    im = plt.imshow(data,origin='',vmin=np.percentile(data,10),
+                vmax=np.percentile(data,90))
     ax = plt.gca()
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -155,10 +154,10 @@ def Save_files(self):
         ref = '_' + self.date + '_'
     
     name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.pdf'
-    figures(self.subtracted,self.background,self.noise,name)
+    figures(self.image,self.background,self.noise,name)
 
     name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.fits.fz'
-    Make_fits(self.subtracted,name,self.header)
+    Make_fits(self.image,name,self.header)
 
     name = directory + self.sector + ref + str(int(self.camera) * int(self.ccd)) + '.bkg.fits.fz'
     Make_fits(self.background,name,self.header)
@@ -615,7 +614,7 @@ class TESS_reduction(object):
             # update header with info
             self.Update_header()
             # apply offset
-            self.image += self.pedastal
+            self.subtract += self.pedastal
             # put back into the original format
             self.Insert_into_orig()
 
