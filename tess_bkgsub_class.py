@@ -49,6 +49,9 @@ def str2bool(v):
 
 
 def sigma_mask(data,error= None,sigma=3,Verbose= False):
+    """
+    Create a sigma clip mask for a given array
+    """
     if type(error) == type(None):
         error = np.zeros(len(data))
 
@@ -61,7 +64,9 @@ def sigma_mask(data,error= None,sigma=3,Verbose= False):
 
 def Source_mask(data, grid=True):
     """
-    doc test
+    Create a source mask for a given image using sigma clipping. If grid is True 
+    then a limited background subtraction is performed on a 32x32 pix grid to
+    get a better idea of sources with a basic background subtraction.
     """
     if grid:
         data[data<0] = np.nan
@@ -137,6 +142,9 @@ def Saturation_mask(self):
 
 
 def Save_files(self):
+    """
+    Creates the save paths for the output files.
+    """
     if self.savepath is None:
         self.savepath = '.'
     directory = self.savepath 
@@ -166,6 +174,9 @@ def Save_files(self):
 
 
 class TESSbackground():
+    """
+    Class for calculating the background of tess images.
+    """
     def __init__(self):
         #needed
         self.image = None
@@ -287,6 +298,13 @@ def Make_fits(data, name, header):
     return 
 
 class TESS_reduction(object):
+    """
+    Performs background subtraction on TESS FFIs and formats them for photpipe.
+
+    Inputs
+    ------
+
+    """
     def __init__(self):
         #needed
         self.file = None
@@ -361,7 +379,9 @@ class TESS_reduction(object):
 
     def Source_mask(self, grid=True):
         """
-        doc test
+        Create a source mask for a given image using sigma clipping. If grid is True 
+        then a limited background subtraction is performed on a 32x32 pix grid to
+        get a better idea of sources with a basic background subtraction.
         """
         data = self.image
         if grid:
@@ -389,6 +409,9 @@ class TESS_reduction(object):
 
 
     def Saturation_mask(self):
+        """
+        Find all saturated pixels and assign them in the bitmask
+        """
         if self.bitmask is None:
             self.bitmask = np.zeros_like(self.image,dtype=int)
         saturation = self.image > self.saturation
@@ -423,6 +446,9 @@ class TESS_reduction(object):
         return 
 
     def Update_header(self):
+        """
+        Update the fits header to the format needed for photpipe
+        """
         sub = self.subtracted
         sub += self.pedastal # add a pedastal value 
         skysig = np.nanmedian(np.nanstd(sub*convolve(self.mask,np.ones((3,3)))))
@@ -482,12 +508,15 @@ class TESS_reduction(object):
         return 
     
     def Load_reference(self):
+        """
+        Load in reference file
+        """
         if self.reffile is None:
             raise ValueError('No reference file specified')
-        try:
+        if os.path.isfile(self.reffile):
             hdu = fits.open(self.reffile)
-        except:
-            raise ValueError('Could not load {}'.format(self.reffile))        
+        else:
+            raise ValueError('{} Does not exist. Create the file with tess_reference.py'.format(self.reffile))        
 
         data = hdu[0].data
         cut = Cutout2D(data,(1024+44,1024),2048)
@@ -495,6 +524,9 @@ class TESS_reduction(object):
         return
 
     def Subtract_background(self):
+        """
+        Use the TESSbackground class to subtract the background
+        """
         bkg = TESSbackground()
         bkg.image = self.image
         bkg.mask = self.mask
@@ -507,22 +539,34 @@ class TESS_reduction(object):
 
 
     def Background_name(self):
+        """
+        Background image file name
+        """
         name = self.savename
         bkgname = name.split('.fits')[0] + '.bkg.fits.fz'
         return bkgname
 
     def Noise_name(self):
+        """
+        Noise image file name
+        """
         name = self.savename
         noisename = name.split('.fits')[0] + '.noise.fits.fz'
         return noisename
 
     def Bitmask_name(self):
+        """
+        Bitmask image file name
+        """
         name = self.savename
         maskname = name.split('.fits')[0] + '.mask.fits.fz'
         return maskname
 
 
     def Pipeline_save(self):
+        """
+        Save pipeline outputs
+        """
         if self.savename is None:
             self.savename = './not_named_reduction.fits.fz'
 
@@ -553,6 +597,9 @@ class TESS_reduction(object):
         return
 
     def Run_reduction(self,args):
+        """"
+        Wrapper for all the reduction functions.
+        """
         self.Assign_args(args)
         # load images 
         self.Load_image()

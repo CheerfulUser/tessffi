@@ -351,6 +351,9 @@ class TESSref(object):
 
 
     def Make_reference(self,args):
+        """"
+        Wrapper for all the reduction functions.
+        """
         self.Assign_args(args)
         self.Load_list()
         self.low_bkg_ref()
