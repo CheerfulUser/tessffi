@@ -178,6 +178,13 @@ def Save_files(self):
 class TESSbackground():
     """
     Class for calculating the background of tess images.
+
+    Options
+    --------
+    smoothing : int
+        Size of the smoothing gaussian
+    strap : bool
+        If the straps are included in the background subtraction, or just ignored
     """
     def __init__(self):
         #needed
@@ -305,7 +312,32 @@ class TESS_reduction(object):
 
     Inputs
     ------
+    file : str
+        full path of the tess image to be processed
+    reffile : str
+        full path of the reference image
+    savename : str
+        Base name/path of the output files
+    
+    Options
+    -------
+    pipeline : bool
+        changes the saving mode to conform with the expected inputs of photpipe
+    plot : bool
+        saves a plot of the images and background subtraction
+    smoothing : int
+        sigma of the gaussian smoothing kernal used in smoothing the continuous background
+    pedastal : int
+        positive offset to add to the image
+    strap : bool
+        select if the straps are ignored or fit in the background subtraction
 
+    Outputs
+    -------
+    Background subtracted image 
+    Noise image 
+    Background image
+    Bitmask image
     """
     def __init__(self):
         #needed
@@ -363,6 +395,7 @@ class TESS_reduction(object):
         parser.add_argument('-fig','--figure',type=str2bool, nargs='?',
                         const=True, default=False,
                 help=('Switch to plot reduction figures'))
+
         return parser
 
 

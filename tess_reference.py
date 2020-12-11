@@ -61,6 +61,43 @@ def Make_fits(data, name, header):
 
 
 class TESSref(object):
+    """
+    Creates a reference image from a TESS sector, camera, and ccd. 
+    Images are slected to be included in the reference image if the sum of 
+    all counts in the image are below a certain percentile. This limits the
+    number of large background effects appearing in the reference image.
+
+    Inputs
+    ------
+    file : text file
+        list of all images to create a reference from
+    savename : str
+        Base name/path of the output files
+    
+    Options
+    -------
+    pipeline : bool
+        changes the saving mode to conform with the expected inputs of photpipe
+    plot : bool
+        saves a plot of the images and background subtraction
+    smoothing : int
+        sigma of the gaussian smoothing kernal used in smoothing the continuous background
+    pedastal : int
+        positive offset to add to the image
+    strap : bool
+        select if the straps are ignored or fit in the background subtraction
+    method : str
+        Method used to select reference images 
+        Currently only "lowbkg" is implemented
+
+    Outputs
+    -------
+    Background subtracted reference image 
+    Noise image 
+    Background image
+    Bitmask image
+    """
+
     def __init__(self):
         #needed
         self.imagefiles = None
@@ -71,7 +108,7 @@ class TESSref(object):
         self.smoothing = 12
         self.pedastal = 500
         self.savepath = '.'
-        self.method = 'low bkg'
+        self.method = 'lowbkg'
         self.strap = True
         # calculated
         self.hdu = None
@@ -97,9 +134,9 @@ class TESSref(object):
         parser.add_argument('-i','--input', default=None)
         parser.add_argument('-o','--output',default=None,
                 help=('Full save path for main output'),type=str)
-        parser.add_argument('-m','--method',default='low bkg',
+        parser.add_argument('-m','--method',default='lowbkg',
                 help=('Method used to calculate the reference frame: \n'
-                    + 'low bkg \n'
+                    + 'lowbkg \n'
                     + 'working on it'),type=str)
         parser.add_argument('-p','--pipeline', default = True, 
                 help=('Switch to use pipeline saving function'))
