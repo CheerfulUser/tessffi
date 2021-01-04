@@ -199,7 +199,7 @@ class TESSbackground():
         self.bitmask = None
 
 
-    def Smooth_bkg(self,data,smoothing_factor, extrapolate = True):
+    def Smooth_bkg(self,data,smoothing_factor=3, extrapolate = True):
         d = deepcopy(data)
         d[d == 0] = np.nan
         x = np.arange(0, d.shape[1])
@@ -347,7 +347,7 @@ class TESS_reduction(object):
         self.savename = None
         self.pipeline = True
         self.plot = False
-        self.smoothing = 12
+        self.smoothing = 3
         self.pedastal = 500
         self.strap = True
         self.savepath = None
