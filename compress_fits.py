@@ -32,14 +32,14 @@ def makedir(dir):
 		
 
 def define_options(parser=None, usage=None, conflict_handler='resolve'):
-		if parser is None:
-			parser = argparse.ArgumentParser(usage=usage, conflict_handler=conflict_handler)
+	if parser is None:
+		parser = argparse.ArgumentParser(usage=usage, conflict_handler=conflict_handler)
 
-		parser.add_argument('-p','--pattern', default = None, 
-				help=('Files to compress, if using wildcards make sure its in quotes.'))
-		parser.add_argument('-s','--save_dir', default = None,
-				help=('directory to save compressed files to.'))
-		return parser
+	parser.add_argument('-p','--pattern', default = None, 
+			help=('Files to compress, if using wildcards make sure its in quotes.'))
+	parser.add_argument('-s','--save_dir', default = None,
+			help=('directory to save compressed files to.'))
+	return parser
 
 
 if __name__ == '__main__':

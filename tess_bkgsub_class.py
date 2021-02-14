@@ -418,7 +418,11 @@ class TESS_reduction(object):
         then a limited background subtraction is performed on a 32x32 pix grid to
         get a better idea of sources with a basic background subtraction.
         """
-        data = deepcopy(self.image)
+        if self.reference is not None:
+            data = deepcopy(self.reference)
+        else:
+            print('No reference image, using image as self reference')
+            data = deepcopy(self.image) 
         if grid:
             data[data<0] = np.nan
             data[data >= np.percentile(data,95)] =np.nan
@@ -500,16 +504,17 @@ class TESS_reduction(object):
         self.header['NOISEIM'] = 1
         self.header['MASKIM'] = 1
         gain = np.nanmean([self.header['GAINA'],self.header['GAINB'],
-                            self.header['GAINC'],self.header['GAIND']])
-        self.header['GAIN'] = (gain, '[electrons/count] Average CCD output gain')
+                           self.header['GAINC'],self.header['GAIND']])
+        
+        self.header['GAIN']     = (gain, '[electrons/count] Average CCD output gain')
         self.header['PIXSCALE'] = (21, 'pixel scale in arcsec / pix')
         self.header['SW_PLTSC'] = (21, 'pixel scale in arcsec / pix')
         self.header['PHOTCODE'] = (0x9500, 'photpope index')
         self.header['SATURATE'] = self.saturation
-        self.header['STACK'] = self.stacked
+        self.header['STACK']    = self.stacked
         self.header['FLAGBADP'] = (0x1, 'pixel flag for bad pixels')
-        self.header['FLAGSAT'] = (0x2, 'pixel flag for saturation')
-        self.header['FLAGBKG'] = (0x4, 'pixel flag for bad background')
+        self.header['FLAGSAT']  = (0x2, 'pixel flag for saturation')
+        self.header['FLAGBKG']  = (0x4, 'pixel flag for bad background')
 
         print('Header updated')
         return 
