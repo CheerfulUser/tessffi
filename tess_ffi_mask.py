@@ -16,6 +16,9 @@ import argparse
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning) 
 
+straps = {}
+straps['Column'] = []
+
 def size_limit(x,y,image):
     yy,xx = image.shape
     ind = ((y > 0) & (y < yy-1) & (x > 0) & (x < xx-1))
@@ -138,6 +141,14 @@ def Big_sat(table,wcs,scale=1):
     satmasks = np.array(satmasks)
     return satmasks
 
+def Strap_mask(data,size):
+    strap_mask = np.zeros_like(data)
+    path = '/user/rridden/feet/'
+    straps = pd.read_csv(path+'tess_straps.csv')['Column'].values
+    strap_mask[:,straps+43] = 1
+    big_strap = fftconvolve(strap_mask,np.ones((size,size)),mode='same') > .5
+    return big_strap
+
 
 def Make_fits(data, name, header):
     print('makefits shape ',data.shape)
@@ -146,7 +157,7 @@ def Make_fits(data, name, header):
     newhdu.writeto(name,overwrite=True)
     return 
 
-def Make_mask(file,scale):
+def Make_mask(file,scale, strap):
     path = '/user/rridden/feet/'
     hdu = fits.open(file)[0]
     image = hdu.data
@@ -160,21 +171,36 @@ def Make_mask(file,scale):
     mg = gaia_auto_mask(gaia,wcs,scale)
     mp = ps1_auto_mask(ps1,wcs,scale)
 
-    sat = np.nansum(sat,axis=0) > 0
-    mask = (mg['all']+mp['all'] + sat) > 0
-    
-    return mask
+    sat = (np.nansum(sat,axis=0) > 0).astype(int) * 2 # assign 2 bit 
+    mask = ((mg['all']+mp['all']) > 0).astype(int) * 1 # assign 1 bit 
+    strap = Strap_mask(image,strap).astype(int) * 4 # assign 4 bit 
 
-def TESS_source_mask(file, name, scale):
+    totalmask = mask | sat | strap
+    
+    return totalmask
+
+def Update_header(header):
+    head = header
+    head['STARBIT'] = (1, 'bit value for normal sources')
+    head['SATBIT'] = (2, 'bit value for saturated sources')
+    head['STRAPBIT'] = (4, 'bit value for straps')
+    return head
+
+def TESS_source_mask(file, name, scale, strap):
     """
     Make and save a source mask for a TESS image using 
     """
-    mask = Make_mask(file,scale)
+    mask = Make_mask(file,scale, strap)
     
     path = '/user/rridden/feet/'
     hdu = fits.open(file)[0]
+    head = Update_header(hdu.header)
     
-    Make_fits(mask*1.0,name,hdu.header)
+    print(head['STARBIT'])
+
+    Make_fits(mask,name,head)
+
+
 
 
 def define_options(parser=None, usage=None, conflict_handler='resolve'):
@@ -183,10 +209,12 @@ def define_options(parser=None, usage=None, conflict_handler='resolve'):
 
     parser.add_argument('-f','--file', default = None, 
             help=('Fits file to make the mask of.'))
-    parser.add_argument('-o','--output', default = None,
+    parser.add_argument('-o','--output', default = 'default.fits',
             help=('Full output path/name for the created mask'))
     parser.add_argument('--scale',default = 1,
             help=('scale factor for the mask size, applies to all masks'))
+    parser.add_argument('--strapsize',default = 3,
+            help=('size for the strap mask size.'))
     return parser
 
     
@@ -198,6 +226,7 @@ if __name__ == '__main__':
     file   = args.file
     save   = args.output
     scale  = float(args.scale)
+    strap  = args.strapsize
 
-    TESS_source_mask(file, save, scale)
+    TESS_source_mask(file, save, scale, strap)
     print('Made mask for {}, saved as {}'.format(file,save))
