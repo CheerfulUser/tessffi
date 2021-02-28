@@ -16,8 +16,7 @@ import argparse
 import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning) 
 
-straps = {}
-straps['Column'] = []
+
 
 def size_limit(x,y,image):
     yy,xx = image.shape
@@ -150,14 +149,35 @@ def Strap_mask(data,size):
     return big_strap
 
 
+def Make_bad_pixel_mask(file,image):
+    
+    data = fits.open(image)[0].data
+    header = fits.open(image)[0].header
+    bad = np.loadtxt(file,skiprows=3,dtype=object)
+    mask = np.zeros_like(data)
+    for b in bad:
+        b = b.split('(')[-1].split(',')
+
+        x  = int(float(b[0]))
+        y  = int(float(b[1]))
+        dx = int(float(b[2]))
+        dy = int(float(b[3]))
+
+        mask[y:y+dy,x:x+dx] = 1
+        
+    #Make_fits(mask,name,header)
+    mask = mask.astype(int)
+    mask = mask *8
+    return mask
+
 def Make_fits(data, name, header):
-    print('makefits shape ',data.shape)
+    #print('makefits shape ',data.shape)
     newhdu = fits.PrimaryHDU(data, header = header)
     newhdu.scale('int16', bscale=1.0,bzero=32768.0)
     newhdu.writeto(name,overwrite=True)
     return 
 
-def Make_mask(file,scale, strap):
+def Make_mask(file,scale,badpix,strapsize):
     path = '/user/rridden/feet/'
     hdu = fits.open(file)[0]
     image = hdu.data
@@ -166,6 +186,7 @@ def Make_mask(file,scale, strap):
     ccd = str(hdu.header['CCD'])
     ps1 = pd.read_csv(path+'ps1'+cam+ccd+'_footprint.csv')
     gaia = pd.read_csv(path+'gaia'+cam+ccd+'_footprint.csv')
+
     
     sat = Big_sat(gaia,wcs,scale)
     mg = gaia_auto_mask(gaia,wcs,scale)
@@ -173,32 +194,46 @@ def Make_mask(file,scale, strap):
 
     sat = (np.nansum(sat,axis=0) > 0).astype(int) * 2 # assign 2 bit 
     mask = ((mg['all']+mp['all']) > 0).astype(int) * 1 # assign 1 bit 
-    strap = Strap_mask(image,strap).astype(int) * 4 # assign 4 bit 
-
-    totalmask = mask | sat | strap
+    strap = Strap_mask(image,strapsize).astype(int) * 4 # assign 4 bit 
+    if badpix is not None:
+        bp = Make_bad_pixel_mask(badpix, file)
+        totalmask = mask | sat | strap | bp
+    else:
+        totalmask = mask | sat | strap
     
     return totalmask
 
 def Update_header(header):
     head = header
-    head['STARBIT'] = (1, 'bit value for normal sources')
-    head['SATBIT'] = (2, 'bit value for saturated sources')
+    head['STARBIT']  = (1, 'bit value for normal sources')
+    head['SATBIT']   = (2, 'bit value for saturated sources')
     head['STRAPBIT'] = (4, 'bit value for straps')
+    head['STRAPBIT'] = (8, 'bit value for bad pixels')
     return head
 
-def TESS_source_mask(file, name, scale, strap):
+def TESS_source_mask(file, name, badpix, scale, strapsize, sub):
     """
     Make and save a source mask for a TESS image using 
     """
-    mask = Make_mask(file,scale, strap)
+    mask = Make_mask(file,scale,badpix, strapsize)
     
     path = '/user/rridden/feet/'
     hdu = fits.open(file)[0]
     head = Update_header(hdu.header)
     
-    print(head['STARBIT'])
 
     Make_fits(mask,name,head)
+    if sub:
+        print('Making submasks for straps and bad pixels')
+        # make strap submask
+        strap = (mask & 4)
+        n = name.split('.fits')[0] + '.strap.fits'
+        Make_fits(strap, n, head)
+
+        # make bad pixel submask
+        bad = (mask & 2) | (mask & 8)
+        n = name.split('.fits')[0] + '.badpix.fits'
+        Make_fits(bad, n, head)
 
 
 
@@ -209,12 +244,17 @@ def define_options(parser=None, usage=None, conflict_handler='resolve'):
 
     parser.add_argument('-f','--file', default = None, 
             help=('Fits file to make the mask of.'))
-    parser.add_argument('-o','--output', default = 'default.fits',
+    parser.add_argument('-o','--output', default = 'default.mask.fits',
             help=('Full output path/name for the created mask'))
+    parser.add_argument('-b','--badpix',default = None,
+            help=('DS9 region file to mask bad pixels.'))
     parser.add_argument('--scale',default = 1,
             help=('scale factor for the mask size, applies to all masks'))
     parser.add_argument('--strapsize',default = 3,
             help=('size for the strap mask size.'))
+    parser.add_argument('--save_submasks',default = False,
+            help=('save bad pixel and strap submasks.'))
+
     return parser
 
     
@@ -226,7 +266,9 @@ if __name__ == '__main__':
     file   = args.file
     save   = args.output
     scale  = float(args.scale)
-    strap  = args.strapsize
+    sub  = args.save_submasks
+    strapsize = int(args.strapsize)
+    badpix = args.badpix
 
-    TESS_source_mask(file, save, scale, strap)
+    TESS_source_mask(file, save, badpix, scale, strapsize, sub)
     print('Made mask for {}, saved as {}'.format(file,save))
