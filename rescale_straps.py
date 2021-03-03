@@ -10,6 +10,21 @@ import argparse
 
 
 def grad_clip(data,box_size=100):
+    """
+    Perform a local sigma clip of points based on the gradient of the points. 
+    Pixels with large gradients are contaminated by stars/galaxies.
+
+    Inputs
+    ------
+        data : array
+            1d array of the data to clip
+        box_size : int 
+            integer defining the box size to clip over 
+    Output
+    ------
+        gradind : bool
+
+    """
     gradind = np.zeros_like(data)
     
     for i in range(len(data)):
@@ -31,11 +46,15 @@ def grad_clip(data,box_size=100):
                 gradind[i-box_size//2:][ind] = gind
             else:
                 gradind[i-box_size//2:i+box_size//2][ind] = gind
-        
-    return gradind > 0
+    
+    gradind = gradind > 0
+    return gradind 
 
 def fit_strap(data):
-    
+    """
+    interpolate over missing data
+
+    """
     x = np.arange(0,len(data))
     y = data.copy()
     y[~grad_clip(y)] = np.nan
@@ -60,6 +79,21 @@ def Make_fits(data, name, header):
     return 
 
 def Rescale_straps(ref_file,mask_file,output,av_size=5):
+    """
+    Rescales the strap columns of the input TESS image to account 
+    for the increased QE of strap columns.
+
+    Inuts
+    -----
+        ref_file : str
+            file to be rescaled 
+        mask_file : str
+            master mask file for the image 
+        output : str
+            save name
+        av_size : int 
+            Numver of neaby "normal" columns to average over
+    """
     ref = fits.open(ref_file)[0]
     data = ref.data * 1.
     mask = fits.open(mask_file)[0].data
@@ -83,7 +117,9 @@ def Rescale_straps(ref_file,mask_file,output,av_size=5):
 
     Make_fits(corrected, output, cor_header)
     name = output.split('.fits')[0] + '.qe.fits'
-    Make_fits(QE*100, name, cor_header) # scaled to make it work in integer form 
+    Make_fits(QE*1000, name, cor_header) # scaled to make it work in integer form 
+
+    return 'Rescaled {}, saved as {}'.format(ref_file,output)
 
 def define_options(parser=None, usage=None, conflict_handler='resolve'):
     if parser is None:
