@@ -126,7 +126,7 @@ def Rescale_straps(ref_file,mask_file,output,av_size=5):
 
     Make_fits(corrected, output, cor_header)
     name = output.split('.fits')[0] + '.qe.fits'
-    Make_fits(QE*1000, name, cor_header) # scaled to make it work in integer form 
+    Make_fits(QE, name, cor_header,integer=False) # scaled to make it work in integer form 
 
     return 'Rescaled {}, saved as {}'.format(ref_file,output)
 
