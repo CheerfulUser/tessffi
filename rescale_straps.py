@@ -145,8 +145,8 @@ def calc_strap_factor(i,breaks,size,normals,data):
         qe[:,normals[b]+1+j] = factor
     return qe
 
-def correct_straps(ref_file,mask_file,output,size=5,parallel=True):
-    ref = fits.open(ref_file)[0]
+def correct_straps(ref_file,mask_file,ext,output,size=5,parallel=True):
+    ref = fits.open(ref_file)[ext]
     data = ref.data * 1.
     mask = fits.open(mask_file)[0].data
 
@@ -189,12 +189,15 @@ def define_options(parser=None, usage=None, conflict_handler='resolve'):
             help=('Reference fits file to rescale strap QE.'))
     parser.add_argument('-m','--mask', default = None,
             help=('Full pipeline mask for the image.'))
+    parser.add_argument('-ext','--extension', default = 0,
+            help=('Full pipeline mask for the image.'))
     parser.add_argument('-o','--output', default = 'default.rescale.fits',
             help=('Full output path/name for the rescaled image'))
     parser.add_argument('--av_size',default = 5,
             help=('number of nearby columns to average.'))
     parser.add_argument('--parallel',default = True,
             help=('use parallel processing.'))
+
 
     return parser
 
@@ -206,9 +209,10 @@ if __name__ == '__main__':
     print('got options: ',args)
     file    = args.ref_file
     mask    = args.mask
+    ext     = int(args.extension)
     save    = args.output
     av_size = int(args.av_size)
     par     = args.parallel
 
-    correct_straps(file, mask, save, av_size,par)
+    correct_straps(file, mask,ext, save, av_size,par)
     print('Rescaled {}, saved as {}'.format(file,save))
