@@ -177,9 +177,9 @@ def Make_fits(data, name, header):
     newhdu.writeto(name,overwrite=True)
     return 
 
-def Make_mask(file,scale,badpix,strapsize):
-    path = '/user/rridden/feet/'
-    hdu = fits.open(file)[0]
+def Make_mask(file,sec,ext,scale,badpix,strapsize):
+    path = '/user/rridden/feet/'+str(sec) + '/'
+    hdu = fits.open(file)[ext]
     image = hdu.data
     wcs = WCS(hdu)
     cam = str(hdu.header['CAMERA'])
@@ -211,14 +211,14 @@ def Update_header(header):
     head['STRAPBIT'] = (8, 'bit value for bad pixels')
     return head
 
-def TESS_source_mask(file, name, badpix, scale, strapsize, sub):
+def TESS_source_mask(file,sec,ext, name, badpix, scale, strapsize, sub):
     """
     Make and save a source mask for a TESS image using 
     """
-    mask = Make_mask(file,scale,badpix, strapsize)
+    mask = Make_mask(file,sec,ext,scale,badpix, strapsize)
     
     path = '/user/rridden/feet/'
-    hdu = fits.open(file)[0]
+    hdu = fits.open(file)[ext]
     head = Update_header(hdu.header)
     
 
@@ -244,6 +244,10 @@ def define_options(parser=None, usage=None, conflict_handler='resolve'):
 
     parser.add_argument('-f','--file', default = None, 
             help=('Fits file to make the mask of.'))
+    parser.add_argument('-sec','--sector', default = None,
+            help=('Sector of data'))
+    parser.add_argument('-ext','--extension', default = 0,
+            help=('Fits extension of image'))
     parser.add_argument('-o','--output', default = 'default.mask.fits',
             help=('Full output path/name for the created mask'))
     parser.add_argument('-b','--badpix',default = None,
@@ -269,6 +273,8 @@ if __name__ == '__main__':
     sub  = args.save_submasks
     strapsize = int(args.strapsize)
     badpix = args.badpix
+    ext = int(args.extension)
+    sec = args.sector
 
-    TESS_source_mask(file, save, badpix, scale, strapsize, sub)
+    TESS_source_mask(file,sec,ext, save, badpix, scale, strapsize, sub)
     print('Made mask for {}, saved as {}'.format(file,save))
