@@ -172,10 +172,10 @@ def correct_straps(ref_file,mask_file,ext,output,size=5,parallel=True):
 
     cor_header = deepcopy(ref.header)
     cor_header['STRAPCAL'] = ('T', 'T if the strap QE has been rescaled')
-    print(max(qe),min(qe))
+    print(np.nanmax(qe),np.nanmin(qe))
     Make_fits(data * qe, output, cor_header)
     name = output.split('.fits')[0] + '.qe.fits'
-    print(max(qe),min(qe))
+    print(np.nanmax(qe),np.nanmin(qe))
     Make_fits(qe, name, cor_header,integer=False) # scaled to make it work in integer form 
 
     return 'Rescaled {}, saved as {}'.format(ref_file,output)
