@@ -84,6 +84,7 @@ def Make_fits(data, name, header,integer = True):
         newhdu.scale('int16', bscale=1.0,bzero=32768.0)
     else:
         newhdu.scale('float64')
+        newhdu.data = data 
     newhdu.writeto(name,overwrite=True)
     return 
 
