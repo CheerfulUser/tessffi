@@ -184,8 +184,8 @@ def Make_mask(file,sec,ext,scale,badpix,strapsize):
     wcs = WCS(hdu)
     cam = str(hdu.header['CAMERA'])
     ccd = str(hdu.header['CCD'])
-    ps1 = pd.read_csv(path+'ps1_s'str(sec)+'_'+cam+ccd+'_footprint.csv')
-    gaia = pd.read_csv(path+'gaia_s'str(sec)+'_'+cam+ccd+'_footprint.csv')
+    ps1 = pd.read_csv(path+'ps1_s' + str(sec)+'_'+cam+ccd+'_footprint.csv')
+    gaia = pd.read_csv(path+'gaia_s' + str(sec)+'_'+cam+ccd+'_footprint.csv')
 
     
     sat = Big_sat(gaia,wcs,scale)
